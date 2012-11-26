@@ -1,0 +1,14 @@
+/* line 7, ../sass/partials/_page.scss */
+body, select, input, textarea {
+  color: #222222;
+}
+
+@media only screen and (min-width: 480px) {
+  /* Style adjustments for viewports 480px and over go here */
+}
+@media only screen and (min-width: 768px) {
+  /* Style adjustments for viewports 768px and over go here */
+}
+@media print {
+  /* Style adjustments for print go here */
+}
