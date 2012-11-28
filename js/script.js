@@ -35,6 +35,34 @@ function initCamera(callback) {
 
 }
 
+var Track = (function() {
+
+  function Track(name) {
+    this.name = name;
+    this.audioFiles = [];
+    
+    for (var i=1; i < 29; i++) {
+      var audioFile = new AudioFile();
+      audioFile.load('music/chunks/'+this.name+'-chunk-'+i+'.mp3');
+      this.audioFiles.push(audioFile);
+    };
+  }
+  
+  Track.prototype.playAll = function() {
+    var that = this;
+    var i = -1;
+    setInterval(function() {
+      that.playBar(++i % that.audioFiles.length)
+    }, 6650);
+  }
+  
+  Track.prototype.playBar = function(bar) {
+    this.audioFiles[bar].play();
+  }
+
+  return Track;
+})();
+
 var AudioFile = (function() {
 
   function AudioFile() {
@@ -71,21 +99,35 @@ var AudioFile = (function() {
 
 setupAPIs(function() {
   $(document).ready(function() {
-    initCamera(function() {
-
-      var audioFiles = [];
-      for (var i=1; i < 29; i++) {
-        var audioFile = new AudioFile();
-        audioFile.load('music/1901-bars-'+i+'.mp3');
-        audioFiles.push(audioFile);
-      };
-
+    // initCamera(function() {
+      
+      var tracks = [];
+      tracks.push(new Track('Beat'));
+      tracks.push(new Track('Bass'));
+      tracks.push(new Track('Rythm Guitar'));
+      tracks.push(new Track('Other Guitar'));
+      tracks.push(new Track('Siren'));
+      tracks.push(new Track('Voice'));
+      tracks.push(new Track('Synth'));
+      tracks.push(new Track('Synth 2'));
+      tracks.push(new Track('Keys'));
+      
+      
       var i = -1;
       setInterval(function() {
-        audioFiles[++i % audioFiles.length].play();
+        var trackNo = ++i % tracks[0].audioFiles.length;
+        tracks.forEach(function(track) {
+          track.playBar(trackNo);
+        });
       }, 6650);
       
-    });
+
+            // 
+            // var beatTrack = new Track('Beat')
+            // beatTrack.playAll();
+
+      
+    // });
   });
 });
 
