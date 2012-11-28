@@ -46,6 +46,8 @@ var Track = (function() {
       audioFile.load('music/chunks/'+this.name+'-chunk-'+i+'.mp3');
       this.audioFiles.push(audioFile);
     };
+    
+    this.view = new TrackView(this);
   }
   
   Track.prototype.playAll = function() {
@@ -58,14 +60,46 @@ var Track = (function() {
   
   Track.prototype.playBar = function(bar) {
     this.audioFiles[bar].play();
+    this.view.highlightFile(bar)
   }
 
   return Track;
 })();
 
+var TrackView = (function() {
+
+  function TrackView(track) {
+    this.track = track;
+    var view = $('<div class="track"><div class="name">'+this.track.name+'</div></div>');
+    this.view = view;
+
+    var files = $('<div class="files"></div>');
+    _.each(this.track.audioFiles, function(audioFile) {
+      var audioFileView = $('<div class="audioFile"></div>');
+      audioFileView.click(function() {
+        audioFileView.toggleClass('muted');
+        audioFile.muted = audioFileView.hasClass('muted')
+      });
+      files.append(audioFileView);
+    });
+    
+    files.append('<span style="clear: both;"></span>');
+    this.view.append(files);
+    $('#tracks').append(this.view);
+  }
+  
+  TrackView.prototype.highlightFile = function(fileNumber) {
+    this.view.find('.audioFile:eq('+(fileNumber-1)+')').removeClass('highlight');
+    this.view.find('.audioFile:eq('+fileNumber+')').addClass('highlight');
+  };
+  
+  return TrackView;
+})();
+
 var AudioFile = (function() {
 
   function AudioFile() {
+    this.muted = false;
   }
 
   AudioFile.prototype.load = function(file) {
@@ -87,6 +121,12 @@ var AudioFile = (function() {
   };
   
   AudioFile.prototype.play = function() {
+    if (this.muted) return;
+    if (!this.buffer) {
+      console.log('This track isn\'t ready yet. Should probably make sure we\'re all loaded first');
+      return;
+    };
+    
     var source = audioContext.createBufferSource();
     source.buffer = this.buffer;              
     source.connect(audioContext.destination);      
@@ -116,34 +156,12 @@ setupAPIs(function() {
       var i = -1;
       setInterval(function() {
         var trackNo = ++i % tracks[0].audioFiles.length;
-        tracks.forEach(function(track) {
+        _.each(tracks, function(track) {
           track.playBar(trackNo);
         });
       }, 6650);
-      
 
-            // 
-            // var beatTrack = new Track('Beat')
-            // beatTrack.playAll();
 
-      
-    // });
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
