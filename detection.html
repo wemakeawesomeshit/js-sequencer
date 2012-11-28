@@ -98,7 +98,7 @@ var context = new webkitAudioContext();
     });
 
     var rows = 7;
-    var columns = 10;
+    var columns = 16;
 
 
     var context = initializeNewWebAudioContext();
@@ -161,7 +161,7 @@ var context = new webkitAudioContext();
     var x, y;
 
     // var threshold = 125;
-    var threshold = 500;
+    var threshold = 400;
     
     function drawOverlay() {
       ctxOverlay.clearRect(0,0,360,240);
@@ -244,7 +244,7 @@ var context = new webkitAudioContext();
         var g = image.data[i * 4 + 1];
         var b = image.data[i * 4 + 2];
         
-        if (r+g+b > 430)
+        if (r+g+b > 400)
           image.data[i * 4 + 3] = 0;
         
       }
