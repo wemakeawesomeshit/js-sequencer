@@ -1,49 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Javascript sequencing v1</title>
+  <title>Javascript sequencing v2</title>
   <script src="http://code.jquery.com/jquery-latest.min.js"></script>
   
   <script src="js/underscore-min.js"></script>
   <script src="js/script.js"></script>
   <script type="text/javascript"></script>
   <style type="text/css">
-    #tracks {
+    #timeSlices {
       background-color: #EEE;
     }
-    #tracks .track {
-      margin: 5px;
+    #timeSlices .timeSlice {
+/*      margin: 5px;*/
 /*      height: 100px;*/
     }
-    #tracks .track .name {
+    #timeSlices .timeSlice .name {
       display: inline-block;
       width: 100px;
       text-align:right;
       padding-right: 10px;
     }
-    #tracks .track .files {
+    #timeSlices .timeSlice .files {
       display: inline-block;
     }
-    #tracks .track .audioFile {
+    #timeSlices .timeSlice .sample {
       float:left;
       border: 1px solid black;
-      background: #3C3;
       height: 15px;
       width: 15px;
       cursor: pointer;
     }
-    #tracks .track .audioFile.muted {
-      background: none;
+    #timeSlices .timeSlice .sample.enabled {
+      background: #3C3;
     }
-    #tracks .track .audioFile.highlight {
+    #timeSlices .timeSlice .sample.highlight {
       background: yellow;
     }
+
   </style>
 </head>
 <body>
-  <h1>Javascript sequencing v1</h1>
+  <h1>Javascript sequencing v2</h1>
   <video id="webcam" autoplay style="display:none"></video>
-  <div id="tracks">
+  <div id="timeSlices">
   </div>
 </body>
 </html>
