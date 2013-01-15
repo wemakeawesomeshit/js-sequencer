@@ -39,7 +39,6 @@ var TimeSlice = (function() {
 })();
 
 
-var selectedOfInstrument = {};
 
 var View = (function() {
 
@@ -65,11 +64,13 @@ var View = (function() {
         playInterval = setInterval(playCurrentSlice, 6650);
         playCurrentSlice();
       });
+      var selectedOfInstrument = {};
       
       _.each(timeSlice.samples, function(sample, j) {
         var lsKey = 'activeSamples:'+i+':'+j;
         var wasActive = localStorage[lsKey] ? 'enabled' : '';
         var audioFileView = $('<div class="sample '+ sample.instrument() + ' ' + wasActive + '" title="'+sample.name+'"></div>');
+        if (wasActive) selectedOfInstrument[sample.instrument()] = audioFileView;
         audioFileView.click(function() {
           audioFileView.toggleClass('enabled');
           if (audioFileView.hasClass('enabled')) {
@@ -79,9 +80,9 @@ var View = (function() {
               existingOfInstrument.click();
             }
             selectedOfInstrument[sample.instrument()] = audioFileView;
-            selectedOfInstrument
           } else {
             localStorage.removeItem(lsKey);
+            selectedOfInstrument[sample.instrument()] = null;
           }
           that.updateTimeSlices();
           return false;
@@ -183,7 +184,7 @@ setupAPIs(function() {
       });
       
       timeSlices = [];
-      var numOfTimeslices = 8;
+      var numOfTimeslices = 48;
       for (var i=0; i < numOfTimeslices; i++) {
         timeSlices.push(new TimeSlice(samples));
       };
