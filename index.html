@@ -1,29 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script src='js/audiobuffer.js'></script>
-  <script src='js/jquery-1.6.2.js'></script>
+  <title>Javascript sequencing v2</title>
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  
+  <script src="js/underscore-min.js"></script>
+  <script src="js/script.js"></script>
+  <script type="text/javascript"></script>
+  <style type="text/css">
+    #timeSlices {
+      background-color: #EEE;
+    }
+    #timeSlices .timeSlice {
+/*      margin: 5px;*/
+/*      height: 100px;*/
+    }
+    #timeSlices .timeSlice .name {
+      display: inline-block;
+      width: 100px;
+      text-align:right;
+      padding-right: 10px;
+    }
+    #timeSlices .timeSlice .files {
+      display: inline-block;
+    }
+    .sample {
+      float:left;
+      border: 1px solid black;
+      height: 15px;
+      width: 15px;
+      cursor: pointer;
+      opacity: 0.3;
+    }
+    .sample.enabled {
+/*      background: #3C3;*/
+      opacity: 1;
+    }
+    .sample.highlight {
+      background: white;
+    }
+    
+    .sample.Bass { background: red; }
+    .sample.Beat { background: blue; }
+    .sample.Keys { background: green; }
+    .sample.OtherGuitar { background: purple; }
+    .sample.RythmGuitar { background: teal; }
+    .sample.Synth2 { background: orange; }
+    .sample.Synth { background: gray; }
+    .sample.Voice { background: brown; }
 
+  </style>
 </head>
 <body>
-
-  <h1>Tune-a-Fish by @skattyadz &amp; @sydlawrence, feat. 2Pac &amp; Biggie Smalls</h1>
-
-  <style>
-     body {
-      background:#1a1a1a;
-      padding:20px;
-    }
-
-    h1 {
-      font-family:helvetica, arial, sans-serif;
-      color:#fff;
-      margin-bottom:10px;
-      font-size:4px;
-    }
-
-    </style>
-
-    <iframe style="width:100%;height:500px;border:0;" src="detection.html" scrolling="no"></iframe>
-  </body>
+  <h1>Javascript sequencing v2</h1>
+  <video id="webcam" autoplay style="display:none"></video>
+  <div id="timeSlices">
+  </div>
+</body>
 </html>
