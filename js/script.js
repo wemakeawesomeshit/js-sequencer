@@ -39,6 +39,8 @@ var TimeSlice = (function() {
 })();
 
 
+var selectedOfInstrument = {};
+
 var View = (function() {
 
   function View(timeSlices) {
@@ -65,11 +67,22 @@ var View = (function() {
       });
       
       _.each(timeSlice.samples, function(sample, j) {
-        var wasActive = localStorage['activeSamples:'+i+':'+j] == 'true' ? 'enabled' : '';
+        var lsKey = 'activeSamples:'+i+':'+j;
+        var wasActive = localStorage[lsKey] ? 'enabled' : '';
         var audioFileView = $('<div class="sample '+ sample.instrument() + ' ' + wasActive + '" title="'+sample.name+'"></div>');
         audioFileView.click(function() {
           audioFileView.toggleClass('enabled');
-          localStorage['activeSamples:'+i+':'+j] = audioFileView.hasClass('enabled');
+          if (audioFileView.hasClass('enabled')) {
+            localStorage[lsKey] = true;
+            var existingOfInstrument = selectedOfInstrument[sample.instrument()];
+            if (existingOfInstrument && existingOfInstrument != audioFileView) {
+              existingOfInstrument.click();
+            }
+            selectedOfInstrument[sample.instrument()] = audioFileView;
+            selectedOfInstrument
+          } else {
+            localStorage.removeItem(lsKey);
+          }
           that.updateTimeSlices();
           return false;
         });
