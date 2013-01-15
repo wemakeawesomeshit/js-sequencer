@@ -65,6 +65,14 @@ var View = (function() {
         playCurrentSlice();
       });
       var selectedOfInstrument = {};
+
+      var mouseIsDown = false;
+      $(window).bind("mousedown", function() {
+        mouseIsDown = true;
+      });
+      $(window).bind("mouseup", function() {
+        mouseIsDown = false;
+      });
       
       _.each(timeSlice.samples, function(sample, j) {
         var lsKey = 'activeSamples:'+i+':'+j;
@@ -73,7 +81,20 @@ var View = (function() {
         lastOfInstrument = lastOfInstrument ? 'lastOfInstrument' : '';
         var audioFileView = $('<div class="sample '+ sample.instrument() + ' ' + wasActive + ' ' + lastOfInstrument + '" title="'+sample.name+'"></div>');
         if (wasActive) selectedOfInstrument[sample.instrument()] = audioFileView;
-        audioFileView.click(function() {
+        
+        audioFileView.hover(function() {
+          if (mouseIsDown) {
+            if (!audioFileView.hasClass('enabled')) {
+              audioFileView.trigger("triggerClick");
+            }
+          }
+        });
+
+        audioFileView.bind("mousedown", function() {
+          audioFileView.trigger("triggerClick");
+        });
+
+        audioFileView.bind("triggerClick",function() {
           audioFileView.toggleClass('enabled');
           if (audioFileView.hasClass('enabled')) {
             localStorage[lsKey] = true;
