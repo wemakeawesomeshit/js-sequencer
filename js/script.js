@@ -16,25 +16,6 @@ function setupAPIs(callback) {
 	else alert('Unsupported browser. Try Google Chrome')
 }
 
-function initCamera(callback) {
-	var onFailSoHard = function(e) {
-    console.log('Reeeejected!', e);
-  };
-
-	video = document.querySelector('video');
-
-	if (navigator.getUserMedia) {
-    navigator.getUserMedia({audio: true, video: true}, function(stream) {
-      video.src = window.URL.createObjectURL(stream);
-      callback && callback();
-    }, onFailSoHard);
-	} else {
-    // video of someone using it
-	  video.src = 'somevideo.webm'; // fallback.
-	}
-
-}
-
 var TimeSlice = (function() {
 
   function TimeSlice(samples) {
