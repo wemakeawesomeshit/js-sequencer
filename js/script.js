@@ -102,7 +102,7 @@ var View = (function() {
             localStorage[lsKey] = true;
             var existingOfInstrument = selectedOfInstrument[sample.instrument()];
             if (existingOfInstrument && existingOfInstrument != audioFileView) {
-              existingOfInstrument.click();
+              existingOfInstrument.trigger('triggerClick');
             }
             selectedOfInstrument[sample.instrument()] = audioFileView;
           } else {
