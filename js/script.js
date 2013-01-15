@@ -84,6 +84,9 @@ var View = (function() {
         var audioFileView = $('<div class="sample '+ sample.instrument() + ' ' + wasActive + ' ' + lastOfInstrument + '" title="'+sample.name+'"></div>');
         if (wasActive) selectedOfInstrument[sample.instrument()] = audioFileView;
         
+        audioFileView.click(function(e) {
+          e.stopPropagation();
+        });
         audioFileView.hover(function() {
           if (mouseIsDown) {
             if (!audioFileView.hasClass('enabled')) {
