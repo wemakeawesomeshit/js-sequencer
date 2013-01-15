@@ -1,10 +1,11 @@
-/* line 7, ../sass/partials/_page.scss */
-body, select, input, textarea {
-  color: #222222;
-}
+
 
 #timeSlices {
   background-color: #EEE;
+  width:697px;
+  position:relative;
+  margin:0 auto;
+
 }
 #timeSlices .timeSlice {
 /*      margin: 5px;*/
