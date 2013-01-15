@@ -14,6 +14,16 @@ body {
 	margin-bottom:50px;
 }
 
+h1 a {
+	color:#fff;
+}
+
+.wrapper {
+	width:760px;
+	position:relative;
+	margin:0 auto;
+}
+
 #instrumentNames {
   width:760px;
   position:relative;

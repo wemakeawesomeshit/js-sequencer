@@ -10,9 +10,11 @@ function setupAPIs(callback) {
 	navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia ||
 	                          navigator.mozGetUserMedia || navigator.msGetUserMedia;
 	
-	var audioSupport = !(typeof webkitAudioContext === 'undefined' && typeof AudioContext === 'undefined');
+	var audioSupport = !(typeof webkitAudioContext === 'undefined' && typeof AudioContext === 'undefined' && (!'webkitAudioContext' in window));
 
-	if (navigator.getUserMedia && audioSupport) callback && callback()
+//	if (navigator.getUserMedia && audioSupport) callback && callback()
+  // safari supports audio, no longer using getusermedia
+  if (audioSupport) callback && callback()
 	else alert('Unsupported browser. Try Google Chrome')
 }
 
