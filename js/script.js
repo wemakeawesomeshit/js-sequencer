@@ -69,7 +69,9 @@ var View = (function() {
       _.each(timeSlice.samples, function(sample, j) {
         var lsKey = 'activeSamples:'+i+':'+j;
         var wasActive = localStorage[lsKey] ? 'enabled' : '';
-        var audioFileView = $('<div class="sample '+ sample.instrument() + ' ' + wasActive + '" title="'+sample.name+'"></div>');
+        var lastOfInstrument = timeSlice.samples[j+1] && timeSlice.samples[j+1].instrument() != sample.instrument();
+        lastOfInstrument = lastOfInstrument ? 'lastOfInstrument' : '';
+        var audioFileView = $('<div class="sample '+ sample.instrument() + ' ' + wasActive + ' ' + lastOfInstrument + '" title="'+sample.name+'"></div>');
         if (wasActive) selectedOfInstrument[sample.instrument()] = audioFileView;
         audioFileView.click(function() {
           audioFileView.toggleClass('enabled');
@@ -115,8 +117,8 @@ var View = (function() {
   
   View.prototype.highlightSlice = function(sliceNo) {
     var that = this;
-    $('.timeSlice').css('background-color', 'transparent');
-    $('.timeSlice:eq('+sliceNo+')').css('background-color', 'darkgray');
+    $('.timeSlice.active').removeClass('active');
+    $('.timeSlice:eq('+sliceNo+')').addClass('active');
   }
   
   return View;

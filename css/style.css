@@ -1,36 +1,54 @@
 
 #instrumentNames {
-  width:697px;
+  width:760px;
   position:relative;
   margin:0 auto;
+  padding-left: 35px;
+  margin-bottom: 20px;
 }
 #instrumentNames span {
   display: block;
   float: left;
   text-align: center;
   box-sizing: border-box;
-  border: 1px solid gray;
+/*  border: 1px solid gray;*/
+  color: #666;
+  text-transform: uppercase;
 }
-#instrumentNames #bass { width: 68px }
-#instrumentNames #beat { width: 68px }
-#instrumentNames #keys { width: 68px }
-#instrumentNames #guitar { width: 154px }
-#instrumentNames #synth { width: 152px }
-#instrumentNames #voice { width: 187px }
+#instrumentNames #bass { width: 70px }
+#instrumentNames #beat { width: 72px }
+#instrumentNames #keys { width: 72px }
+#instrumentNames #guitar { width: 161px }
+#instrumentNames #synth { width: 161px }
+#instrumentNames #voice { width: 189px }
+#instrumentNames #scroll { width: 15px }
 
 #timeSlices {
-  background-color: #EEE;
-  width:697px;
+  background-color: black;
+  width:760px;
   position:relative;
   margin:0 auto;
   clear:both;
 
 }
+#timeSlices * {
+  -webkit-user-select: none;
+}
 #timeSlices .timeSlice {
 /*      margin: 5px;*/
 /*      height: 100px;*/
 	height:17px;
+	cursor: ns-resize;
+	padding-left: 17px;
 }
+
+#timeSlices .timeSlice:hover {
+  background-color: #222;
+}
+#timeSlices .timeSlice.active {
+  background-color: #444 !important;
+}
+
 #timeSlices .timeSlice .name {
   display: inline-block;
   width: 100px;
@@ -65,11 +83,15 @@
   background: white;
 }
 
-.sample.Bass { background: red; }
-.sample.Beat { background: blue; }
-.sample.Keys { background: green; }
-.sample.OtherGuitar { background: purple; }
-.sample.RythmGuitar { background: teal; }
-.sample.Synth2 { background: orange; }
-.sample.Synth { background: gray; }
-.sample.Voice { background: brown; }
+.sample.lastOfInstrument {
+  margin-right: 4px;
+}
+
+.sample.Bass { background: #A70267; }
+.sample.Beat { background: #F10C49; }
+.sample.Keys { background: #FB6B41; }
+.sample.OtherGuitar { background: #F6D86B; }
+.sample.RythmGuitar { background: #F6D86B; }
+.sample.Synth2 { background: #339194; }
+.sample.Synth { background: #339194; }
+.sample.Voice { background: #A70267; }
