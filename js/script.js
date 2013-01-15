@@ -208,14 +208,15 @@ function playCurrentSlice() {
 // delete bass mp3 22
 // delete other guitar 24
 
-var sampleURLs = ['Bass-chunk-12.mp3',
-'Bass-chunk-13.mp3',
-'Bass-chunk-15.mp3',
-'Bass-chunk-21.mp3',
+var sampleURLs = [
 'Beat-chunk-6.mp3',
 'Beat-chunk-7.mp3',
 'Beat-chunk-9.mp3',
 'Beat-chunk-10.mp3',
+'Bass-chunk-12.mp3',
+'Bass-chunk-13.mp3',
+'Bass-chunk-15.mp3',
+'Bass-chunk-21.mp3',
 'Keys-chunk-4.mp3',
 'Keys-chunk-9.mp3',
 'Keys-chunk-10.mp3',
