@@ -84,7 +84,7 @@ var View = (function() {
       });
       
       _.each(timeSlice.samples, function(sample) {
-        var audioFileView = $('<div class="sample" title="'+sample.name+'"></div>');
+        var audioFileView = $('<div class="sample '+ sample.instrument() +'" title="'+sample.name+'"></div>');
         audioFileView.click(function() {
           audioFileView.toggleClass('enabled');
           that.updateTimeSlices();
@@ -119,7 +119,7 @@ var View = (function() {
   View.prototype.highlightSlice = function(sliceNo) {
     var that = this;
     $('.timeSlice').css('background-color', 'transparent');
-    $('.timeSlice:eq('+sliceNo+')').css('background-color', 'yellow');
+    $('.timeSlice:eq('+sliceNo+')').css('background-color', 'darkgray');
   }
   
   return View;
@@ -161,8 +161,8 @@ var Sample = (function() {
     this.source.noteOn(0);      
   };
   
-  Sample.prototype.getInstrument = function() {
-    return this.name.match(/^(.+)(?:-chunk).+$/)[0];
+  Sample.prototype.instrument = function() {
+    return this.name.match(/^(.+)(?:-chunk).+$/)[1].replace(/ /g,'');
   };
   
   return Sample;
