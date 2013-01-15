@@ -1,10 +1,29 @@
 
+#instrumentNames {
+  width:697px;
+  position:relative;
+  margin:0 auto;
+}
+#instrumentNames span {
+  display: block;
+  float: left;
+  text-align: center;
+  box-sizing: border-box;
+  border: 1px solid gray;
+}
+#instrumentNames #bass { width: 68px }
+#instrumentNames #beat { width: 68px }
+#instrumentNames #keys { width: 68px }
+#instrumentNames #guitar { width: 154px }
+#instrumentNames #synth { width: 152px }
+#instrumentNames #voice { width: 187px }
 
 #timeSlices {
   background-color: #EEE;
   width:697px;
   position:relative;
   margin:0 auto;
+  clear:both;
 
 }
 #timeSlices .timeSlice {
