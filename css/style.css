@@ -28,7 +28,16 @@
   width: 15px;
   cursor: pointer;
   opacity: 0.3;
+  --webkit-transition: 500ms all;
+  --moz-transition: 500ms all;
+  --ms-transition: 500ms all;
+  --o-transition: 500ms all;
+  transition: 500ms all;
 }
+.sample:hover {
+	opacity:0.7;
+}
+
 .sample.enabled {
 /*      background: #3C3;*/
   opacity: 1;
