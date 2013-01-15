@@ -1,11 +1,11 @@
 
 body {
 	background-color: #1a1a1a;
-	background-image: -o-linear-gradient(180deg , #1a1a1a 0%, #0a0a0a 50%, #1a1a1a 100%);
-	background-image: -moz-linear-gradient(180deg , #1a1a1a 0%, #0a0a0a 50%, #1a1a1a 100%);
-	background-image: -webkit-linear-gradient(180deg , #1a1a1a 0%, #0a0a0a 50%, #1a1a1a 100%);
-	background-image: -ms-linear-gradient(180deg , #1a1a1a 0%, #0a0a0a 50%, #1a1a1a 100%);
-	background-image: linear-gradient(180deg , #1a1a1a 0%, #0a0a0a 50%, #1a1a1a 100%);
+	background-image: -moz-radial-gradient(50% 18%, circle cover, #1a1a1a, #030303 100%);
+	background-image: -webkit-radial-gradient(50% 18%, circle cover, #1a1a1a, #030303 100%);
+	background-image: -o-radial-gradient(50% 18%, circle cover, #1a1a1a, #030303 100%);
+	background-image: -ms-radial-gradient(50% 18%, circle cover, #1a1a1a, #030303 100%);
+	background-image: radial-gradient(50% 18%, circle cover, #1a1a1a, #030303 100%)
 	background-size: 100% 100%;
 }
 
