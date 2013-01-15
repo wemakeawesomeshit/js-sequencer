@@ -64,10 +64,12 @@ var View = (function() {
         playCurrentSlice();
       });
       
-      _.each(timeSlice.samples, function(sample) {
-        var audioFileView = $('<div class="sample '+ sample.instrument() +'" title="'+sample.name+'"></div>');
+      _.each(timeSlice.samples, function(sample, j) {
+        var wasActive = localStorage['activeSamples:'+i+':'+j] == 'true' ? 'enabled' : '';
+        var audioFileView = $('<div class="sample '+ sample.instrument() + ' ' + wasActive + '" title="'+sample.name+'"></div>');
         audioFileView.click(function() {
           audioFileView.toggleClass('enabled');
+          localStorage['activeSamples:'+i+':'+j] = audioFileView.hasClass('enabled');
           that.updateTimeSlices();
           return false;
         });
