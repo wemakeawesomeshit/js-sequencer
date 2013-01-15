@@ -787,9 +787,7 @@ body {
 
 /* line 18, ../sass/style.scss */
 #header, #footer {
-  position: fixed;
-  left: 0px;
-  right: 0px;
+  
   padding: 10px 50px 9px 50px;
   z-index: 999999;
   background: white;
