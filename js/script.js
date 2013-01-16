@@ -5,6 +5,17 @@
 var video;
 var audioContext = new webkitAudioContext;
 
+var instrumentLabels = {
+  Bass: '#instrumentNames #bass',
+  Beat: '#instrumentNames #beat',
+  Keys: '#instrumentNames #keys',
+  OtherGuitar: '#instrumentNames #guitar',
+  RythmGuitar: '#instrumentNames #guitar',
+  Synth2: '#instrumentNames #synth',
+  Synth: '#instrumentNames #synth',
+  Voice: '#instrumentNames #voice'
+}
+
 function setupAPIs(callback) {
   window.URL = window.URL || window.webkitURL;
 	navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -55,6 +66,18 @@ var View = (function() {
     this.view = view;
     var that = this;
     
+    var mouseIsDown = false;
+    $(window).bind("mousedown", function() {
+      mouseIsDown = true;
+    });
+    $(window).bind("mouseup", function() {
+      mouseIsDown = false;
+    });
+    
+    $('#instrumentNames span').click(function() {
+      $(this).toggleClass('muted');
+    });
+    
     _.each(this.timeSlices, function(timeSlice, i) {
       var timeSliceView = $('<div class="timeSlice"></div>');
       timeSliceView.click(function() {
@@ -66,23 +89,16 @@ var View = (function() {
         playInterval = setInterval(playCurrentSlice, 6650);
         playCurrentSlice();
       });
+      
       var selectedOfInstrument = {};
 
-      var mouseIsDown = false;
-      $(window).bind("mousedown", function() {
-        mouseIsDown = true;
-      });
-      $(window).bind("mouseup", function() {
-        mouseIsDown = false;
-      });
-      
       _.each(timeSlice.samples, function(sample, j) {
         var lsKey = 'activeSamples:'+i+':'+j;
         var wasActive = localStorage[lsKey] ? 'enabled' : '';
-        var lastOfInstrument = timeSlice.samples[j+1] && timeSlice.samples[j+1].instrument() != sample.instrument();
+        var lastOfInstrument = timeSlice.samples[j+1] && timeSlice.samples[j+1].instrument != sample.instrument;
         lastOfInstrument = lastOfInstrument ? 'lastOfInstrument' : '';
-        var audioFileView = $('<div class="sample '+ sample.instrument() + ' ' + wasActive + ' ' + lastOfInstrument + '" title="'+sample.name+'"></div>');
-        if (wasActive) selectedOfInstrument[sample.instrument()] = audioFileView;
+        var audioFileView = $('<div class="sample '+ sample.instrument + ' ' + wasActive + ' ' + lastOfInstrument + '" title="'+sample.name+'"></div>');
+        if (wasActive) selectedOfInstrument[sample.instrument] = audioFileView;
         
         audioFileView.click(function(e) {
           e.stopPropagation();
@@ -103,14 +119,14 @@ var View = (function() {
           audioFileView.toggleClass('enabled');
           if (audioFileView.hasClass('enabled')) {
             localStorage[lsKey] = true;
-            var existingOfInstrument = selectedOfInstrument[sample.instrument()];
+            var existingOfInstrument = selectedOfInstrument[sample.instrument];
             if (existingOfInstrument && existingOfInstrument != audioFileView) {
               existingOfInstrument.trigger('triggerClick');
             }
-            selectedOfInstrument[sample.instrument()] = audioFileView;
+            selectedOfInstrument[sample.instrument] = audioFileView;
           } else {
             localStorage.removeItem(lsKey);
-            selectedOfInstrument[sample.instrument()] = null;
+            selectedOfInstrument[sample.instrument] = null;
           }
           that.updateTimeSlices();
           return false;
@@ -125,6 +141,13 @@ var View = (function() {
     });
     
     $('#timeSlices').append(this.view);
+    
+    _.each(samples, function(sample, i) {
+      $(instrumentLabels[sample.instrument]).click(function() {
+        sample.toggleMute($(this).hasClass('muted'))
+      });
+    });
+    
     
   }
   
@@ -157,6 +180,8 @@ var Sample = (function() {
   function Sample(file) {
     this.name = file;
     var that = this;
+    
+    this.instrument = this.name.match(/^(.+)(?:-chunk).+$/)[1].replace(/ /g,'');
         
     var request = new XMLHttpRequest();
     request.open("GET", 'music/samples/'+file, true);
@@ -179,17 +204,22 @@ var Sample = (function() {
       return;
     };
     
-    // Could probably do this bit on init
     this.source = audioContext.createBufferSource();
-    this.source.buffer = this.buffer;              
-    this.source.connect(audioContext.destination);      
-    this.source.noteOn(0);      
+    this.gainNode = audioContext.createGainNode();
+
+    this.source.buffer = this.buffer;  
+    this.source.connect(this.gainNode);
+    this.gainNode.connect(audioContext.destination);
+    this.gainNode.gain.value = this.muted ? 0 : 1;
+    this.source.noteOn(0);
   };
   
-  Sample.prototype.instrument = function() {
-    return this.name.match(/^(.+)(?:-chunk).+$/)[1].replace(/ /g,'');
-  };
-  
+  Sample.prototype.toggleMute = function(muted) {
+    this.muted = muted;
+    if (!this.gainNode) return;
+    this.gainNode.gain.value = muted ? 0 : 1;
+  }
+
   return Sample;
 })();
 

@@ -29,7 +29,7 @@ h2 a {
   position:relative;
   margin:0 auto;
   padding-left: 25px;
-  opacity:0.4;
+/*  opacity:0.4;*/
   padding-bottom:10px;
   margin-bottom: 20px;
 }
@@ -42,16 +42,25 @@ h2 a {
   font-size:0.7em;
   box-sizing: border-box;
 /*  border: 1px solid gray;*/
-  color: #ccc;
+  color: #CCC;
   text-transform: uppercase;
+  cursor: pointer;
+  -webkit-user-select: none;
 }
-#instrumentNames #bass { width: 70px; text-shadow:0px 0px 10px #A70267; }
-#instrumentNames #beat { width: 72px; text-shadow:0px 0px 10px #F10C49;  }
-#instrumentNames #keys { width: 72px; text-shadow:0px 0px 10px #FB6B41;  }
-#instrumentNames #guitar { width: 161px; text-shadow:0px 0px 10px #F6D86B;  }
-#instrumentNames #synth { width: 161px; text-shadow:0px 0px 10px #339194;  }
-#instrumentNames #voice { width: 189px; text-shadow:0px 0px 10px #A70267;  }
-#instrumentNames #scroll { width: 15px; text-shadow:0px 0px 1px #fff;  }
+#instrumentNames span:hover {
+  opacity:1;
+}
+#instrumentNames span.muted {
+  opacity:0.3;
+  text-shadow: none !important;
+}
+#instrumentNames #bass { width: 70px; text-shadow:0px 0px 12px #A70267, 0px 0px 12px #A70267; }
+#instrumentNames #beat { width: 72px; text-shadow:0px 0px 12px #F10C49; }
+#instrumentNames #keys { width: 72px; text-shadow:0px 0px 12px #FB6B41; }
+#instrumentNames #guitar { width: 161px; text-shadow:0px 0px 12px #F6D86B;  }
+#instrumentNames #synth { width: 161px; text-shadow:0px 0px 12px #339194;  }
+#instrumentNames #voice { width: 189px; text-shadow:0px 0px 12px #A70267, 0px 0px 12px #A70267;  }
+#instrumentNames #scroll { visibility: hidden }
 
 
 
