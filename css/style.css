@@ -13,6 +13,9 @@ body {
 #header {
 	margin-bottom:50px;
 }
+#pause {
+  cursor: pointer;
+}
 
 h2 a {
 	color:#fff;

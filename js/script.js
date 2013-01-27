@@ -2,7 +2,14 @@
 
 */
 
-var video;
+var sequencer = {
+  samples: [],
+  timeSlices: [],
+  numOfTimeslices: 48,
+  view: null,
+  playInterval: null
+}
+
 var audioContext = new webkitAudioContext;
 
 var instrumentLabels = {
@@ -17,252 +24,55 @@ var instrumentLabels = {
 }
 
 function setupAPIs(callback) {
-  window.URL = window.URL || window.webkitURL;
-	navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia ||
-	                          navigator.mozGetUserMedia || navigator.msGetUserMedia;
-	
 	var audioSupport = !(typeof webkitAudioContext === 'undefined' && typeof AudioContext === 'undefined' && (!'webkitAudioContext' in window));
 
-//	if (navigator.getUserMedia && audioSupport) callback && callback()
-  // safari supports audio, no longer using getusermedia
   if (audioSupport) callback && callback()
 	else alert('Unsupported browser. Try Google Chrome')
 }
 
-var TimeSlice = (function() {
+sequencer.stopPlayback = function() {
+  sequencer.paused = true;
+  clearInterval(sequencer.playInterval);
 
-  function TimeSlice(samples) {
-    this.samples = samples;
-    this.activeSamples = [];
-  }
-  
-  TimeSlice.prototype.playActiveSamples = function(bar) {
-    var that = this;
-
-    function isActive(_, i) { return !!that.activeSamples[i]; }
-    var activeSamples = _.filter(that.samples, isActive);
-    _.invoke(activeSamples, 'play');
-  }
-  
-  TimeSlice.prototype.updateActiveSamples = function(activeSamples) {
-    this.activeSamples = activeSamples;
-  }
-
-  return TimeSlice;
-})();
-
-
-
-var View = (function() {
-
-  function View(timeSlices) {
-    this.timeSlices = timeSlices;
-    this.render();
-    this.updateTimeSlices();
-  }
-  
-  View.prototype.render = function() {
-    var view = $('<div></div>');
-    this.view = view;
-    var that = this;
-    
-    var mouseIsDown = false;
-    $(window).bind("mousedown", function() {
-      mouseIsDown = true;
-    });
-    $(window).bind("mouseup", function() {
-      mouseIsDown = false;
-    });
-    
-    $('#instrumentNames span').click(function() {
-      $(this).toggleClass('muted');
-    });
-    
-    _.each(this.timeSlices, function(timeSlice, i) {
-      var timeSliceView = $('<div class="timeSlice"></div>');
-      timeSliceView.click(function() {
-        currentSliceTicker = i-1;
-        // cancel and start slice
-        stopAll();
-        
-        clearInterval(playInterval);
-        playInterval = setInterval(playCurrentSlice, 6650);
-        playCurrentSlice();
-      });
-      
-      var selectedOfInstrument = {};
-
-      _.each(timeSlice.samples, function(sample, j) {
-        var lsKey = 'activeSamples:'+i+':'+j;
-        var wasActive = localStorage[lsKey] ? 'enabled' : '';
-        var lastOfInstrument = timeSlice.samples[j+1] && timeSlice.samples[j+1].instrument != sample.instrument;
-        lastOfInstrument = lastOfInstrument ? 'lastOfInstrument' : '';
-        var audioFileView = $('<div class="sample '+ sample.instrument + ' ' + wasActive + ' ' + lastOfInstrument + '" title="'+sample.name+'"></div>');
-        if (wasActive) selectedOfInstrument[sample.instrument] = audioFileView;
-        
-        audioFileView.click(function(e) {
-          e.stopPropagation();
-        });
-        audioFileView.hover(function() {
-          if (mouseIsDown) {
-            if (!audioFileView.hasClass('enabled')) {
-              audioFileView.trigger("triggerClick");
-            }
-          }
-        });
-
-        audioFileView.bind("mousedown", function() {
-          audioFileView.trigger("triggerClick");
-        });
-
-        audioFileView.bind("triggerClick",function() {
-          audioFileView.toggleClass('enabled');
-          if (audioFileView.hasClass('enabled')) {
-            localStorage[lsKey] = true;
-            var existingOfInstrument = selectedOfInstrument[sample.instrument];
-            if (existingOfInstrument && existingOfInstrument != audioFileView) {
-              existingOfInstrument.trigger('triggerClick');
-            }
-            selectedOfInstrument[sample.instrument] = audioFileView;
-          } else {
-            localStorage.removeItem(lsKey);
-            selectedOfInstrument[sample.instrument] = null;
-          }
-          that.updateTimeSlices();
-          return false;
-        });
-        
-        timeSliceView.append(audioFileView);
-      });
-      
-      that.view.append(timeSliceView);
-      timeSliceView.append('<span style="clear: both;">&nbsp;</span>');
-      
-    });
-    
-    $('#timeSlices').append(this.view);
-    
-    _.each(samples, function(sample, i) {
-      $(instrumentLabels[sample.instrument]).click(function() {
-        sample.toggleMute($(this).hasClass('muted'))
-      });
-    });
-    
-    
-  }
-  
-  View.prototype.updateTimeSlices = function() {
-    var that = this;
-    $('.timeSlice').each(function(timeSliceIndex) {
-      var currentTimeSlice = that.timeSlices[timeSliceIndex];
-      
-      var activeSamples = $(this).find('.sample').map(function(sampleIndex) {
-        return $(this).hasClass('enabled');
-      });
-      
-      currentTimeSlice.updateActiveSamples(activeSamples);
-    });
-  }
-  
-  View.prototype.highlightSlice = function(sliceNo) {
-    var that = this;
-    $('.timeSlice.active').removeClass('active');
-    $('.timeSlice:eq('+sliceNo+')').addClass('active');
-  }
-  
-  return View;
-})();
-
-
-
-var Sample = (function() {
-
-  function Sample(file) {
-    this.name = file;
-    var that = this;
-    
-    this.instrument = this.name.match(/^(.+)(?:-chunk).+$/)[1].replace(/ /g,'');
-        
-    var request = new XMLHttpRequest();
-    request.open("GET", 'music/samples/'+file, true);
-    request.responseType = "arraybuffer";
-
-    request.onload = function() {
-        audioContext.decodeAudioData(request.response, function(buffer) {
-          that.buffer = buffer;
-        }, function() {
-          return alert('Unsupported file format');
-        });
-    };
-    request.send();
-  
-  };
-  
-  Sample.prototype.play = function() {
-    if (!this.buffer) {
-      console.log('This track isn\'t ready yet. Should probably make sure we\'re all loaded first');
-      return;
-    };
-    
-    this.source = audioContext.createBufferSource();
-    this.gainNode = audioContext.createGainNode();
-
-    this.source.buffer = this.buffer;  
-    this.source.connect(this.gainNode);
-    this.gainNode.connect(audioContext.destination);
-    this.gainNode.gain.value = this.muted ? 0 : 1;
-    this.source.noteOn(0);
-  };
-  
-  Sample.prototype.toggleMute = function(muted) {
-    this.muted = muted;
-    if (!this.gainNode) return;
-    this.gainNode.gain.value = muted ? 0 : 1;
-  }
-
-  return Sample;
-})();
-
-stopAll = function() {
-  _.each(samples, function(sample) {
+  _.each(sequencer.samples, function(sample) {
     if (sample.source) sample.source.noteOff(0);
   });
 }
 
-var currentSliceTicker = -1;
-var playInterval;
-var view;
-var samples;
+sequencer.startPlayback = function() {
+  sequencer.paused = false;
+  sequencer.playInterval = setInterval(sequencer.playNextSlice, 6650);
+  sequencer.playCurrentSlice();
+}
+
+var currentSliceTicker = 0;
+
 setupAPIs(function() {
   $(document).ready(function() {
-    // initCamera(function() {
-      
-      samples = _.map(sampleURLs, function(sampleURL) {
-        return new Sample(sampleURL);
-      });
-      
-      timeSlices = [];
-      var numOfTimeslices = 48;
-      for (var i=0; i < numOfTimeslices; i++) {
-        timeSlices.push(new TimeSlice(samples));
-      };
-      
-      view = new View(timeSlices);
-      
-      playInterval = setInterval(playCurrentSlice, 6650);
-      playCurrentSlice();
+    sequencer.samples = _.map(sampleURLs, function(sampleURL) {
+      return new Sample(sampleURL);
+    });
+    
+    for (var i=0; i < sequencer.numOfTimeslices; i++) {
+      sequencer.timeSlices.push(new TimeSlice(sequencer.samples));
+    };
+    
+    sequencer.view = new View();
+    // sequencer.startPlayback();
   });
 });
 
 
-function playCurrentSlice() {        
-  var currentPos = ++currentSliceTicker % timeSlices.length;
-  timeSlices[currentPos].playActiveSamples();
-  view.highlightSlice(currentPos);
+sequencer.playCurrentSlice = function() {        
+  var currentPos = currentSliceTicker % sequencer.timeSlices.length;
+  sequencer.timeSlices[currentPos].playActiveSamples();
+  sequencer.view.highlightSlice(currentPos);
+}
+sequencer.playNextSlice = function() {        
+  currentSliceTicker++;
+  sequencer.playCurrentSlice();
 }
 
-// delete bass mp3 22
-// delete other guitar 24
 
 var sampleURLs = [
 'Beat-chunk-6.mp3',
@@ -304,8 +114,6 @@ var sampleURLs = [
 'Voice-chunk-21.mp3',
 'Voice-chunk-22.mp3',
 'Voice-chunk-14.mp3',
-// 'Voice-chunk-15.mp3',
 'Voice-chunk-16.mp3',
-'Voice-chunk-17.mp3',
-// 'Voice-chunk-18.mp3'
+'Voice-chunk-17.mp3'
 ];
