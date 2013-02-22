@@ -16,10 +16,7 @@ var Sample = (function() {
     request.onload = function() {
         audioContext.decodeAudioData(request.response, function(buffer) {
           that.buffer = buffer;
-          
-          if (++samplesLoaded == sequencer.samples.length) {
-            sequencer.startPlayback();
-          }
+          loading.objectLoaded();
         }, function() {
           return alert('Unsupported file format');
         });

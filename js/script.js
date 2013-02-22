@@ -46,7 +46,7 @@ sequencer.startPlayback = function() {
 }
 
 var currentSliceTicker = 0;
-
+var loading;
 setupAPIs(function() {
   $(document).ready(function() {
     sequencer.samples = _.map(sampleURLs, function(sampleURL) {
@@ -56,9 +56,12 @@ setupAPIs(function() {
     for (var i=0; i < sequencer.numOfTimeslices; i++) {
       sequencer.timeSlices.push(new TimeSlice(sequencer.samples));
     };
+
+    loading = new Loading();
+    loading.countToLoad = sequencer.samples.length;
+    loading.onFinished = sequencer.startPlayback;
     
     sequencer.view = new View();
-    // sequencer.startPlayback();
   });
 });
 
